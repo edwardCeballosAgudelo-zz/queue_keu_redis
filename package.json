@@ -1,0 +1,16 @@
+{
+  "name": "job-queue",
+  "version": "1.0.0",
+  "description": "Simple job queue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shabbir",
+  "license": "ISC",
+  "dependencies": {
+    "kue": "^0.11.6",
+    "kue-ui": "^0.1.0",
+    "sleep": "^5.1.1"
+  }
+}
