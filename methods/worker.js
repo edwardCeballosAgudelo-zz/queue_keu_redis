@@ -1,24 +1,27 @@
 let kue = require('kue');
 let queue = kue.createQueue();
-const winston = require('winston')
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema
 
 queue.process(`download`, function (job, done) {
   downloadFile(job, done);
 });
 
-
 async function downloadFile(job, done) {
-  const mongoose = require('mongoose');
-  const Reception = require('../models/receptions')
   run().catch(error => console.error(error.stack));
   
   async function run() {
     let cont = 0
-    console.time('init')
     await mongoose.connect(job.data.cadenaConexion, { useNewUrlParser: true });
-    for (let i = 0; i < job.data.total; i++) {
+
+    let receptionSchema = new Schema({}, { strict: false })
+    let Reception = mongoose.model('reception', receptionSchema)
+    let countQUery = await Reception.find(job.data.query).estimatedDocumentCount()
+    let totalPages = (countQUery > job.data.limit) ? parseInt(countQUery/job.data.limit) : 1
+
+    for (let i = 0; i <= totalPages; i++) {
       cont = cont + 1
-      job.progress(cont, job.data.total);
+      job.progress(cont, totalPages);
       const array = []
       pathFile = 'data'+ i +'.csv'
       await Reception.find(job.data.query).select('-Body').sort('ReceptionDate').skip(i).limit(job.data.limit).lean().cursor().eachAsync((doc) => 
@@ -27,10 +30,8 @@ async function downloadFile(job, done) {
         return; 
       }, { parallel: 50 });
       await generateFileCsv(array, pathFile, '/', 'jsonFields.Value')
-      console.log('partial ', array.length);
     } 
-    console.timeEnd('init')
-    process.exit(0);
+    done()
   }
 
   async function generateFileCsv (receptionList, pathFile, pathName, jsonFields) {
