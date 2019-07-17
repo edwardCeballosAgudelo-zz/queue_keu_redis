@@ -3,7 +3,7 @@ let queue = kue.createQueue();
 
 kue.Job.range(0, -1, 'asc', (err, jobs) => {
   jobs.map(job => {
-    console.log(`Job ${job.id}, data : ${job.data}, Status : ${job._state}`);
+    console.log(`Job ${job.id}, data : ${JSON.stringify(job.data)}, Status : ${job._state}`);
   })
 });
 

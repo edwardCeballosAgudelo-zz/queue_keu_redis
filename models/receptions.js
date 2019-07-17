@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const mongoosePaginate = require('mongoose-paginate')
 const Schema = mongoose.Schema
 
 let receptionSchema = new Schema({
@@ -70,6 +70,6 @@ let receptionSchema = new Schema({
   }
 })
 
-receptionSchema.index({ DocumentNumber: 1, UUID: 1 }, { unique: true })
+receptionSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('reception', receptionSchema)

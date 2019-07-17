@@ -56,5 +56,5 @@ http.createServer(app, (request, response) => {
 
 function receptionStart (securePort) {
   console.log('app listening on port: ' + securePort)
-  const executeWorker = require('./worker')
+  const executeWorker = require('./methods/worker')
 }

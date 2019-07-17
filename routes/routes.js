@@ -11,6 +11,6 @@ router.use(useragent.express())
 router.use(bodyParser.text({ limit: '50mb' }))
 router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
-router.get('/job', reports.generateCsv)
+router.post('/job', reports.generateCsv)
 
 module.exports = router
